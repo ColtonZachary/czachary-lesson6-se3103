@@ -8,7 +8,7 @@ import model.GameState;
 public class NewGameButtonListener implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
-        App.game.reset();
+        App.game.reset(); // Reset the game state
         App.game.setState(GameState.PLAYING);
         App.win.updateWindow();
     }
