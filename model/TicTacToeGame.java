@@ -120,6 +120,10 @@ public class TicTacToeGame {
         return winner;
     }
 
+    public Marking[] getBoard() {
+        return board;
+    }
+
     @Override
     public String toString() { // string representation of the game board
         var r1 = String.format(" %s  %s  %s \n", board[0], board[1], board[2]);

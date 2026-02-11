@@ -22,6 +22,8 @@ public class ButtonListener implements ActionListener {
             game.changeTurns();
         }
         App.win.updateWindow(); // update the window to reflect the changes in the game state
+        
+
     }
     
 }

@@ -11,9 +11,13 @@ import javax.swing.JRadioButton;
 import javax.swing.border.TitledBorder;
 import javax.swing.plaf.basic.BasicButtonListener;
 
+import controller.App;
 import controller.ButtonListener;
 import controller.NewGameButtonListener;
 import controller.StrategyButtonListener;
+import model.Marking;
+import model.PlayStrategy;
+import model.TicTacToeGame;
 
 public class AppWindow extends JFrame {
 
@@ -23,8 +27,8 @@ public class AppWindow extends JFrame {
     private AppCanvas canvas = new AppCanvas();
     private BoardButton[] markingButtons = new BoardButton[9]; // array of buttons for the tic-tac-toe board
     private JButton newGameButton = new JButton("New Game"); // button for starting a new game
-    private JRadioButton vsHumanButton = new JRadioButton(vsHumanAction); // button for playing against another human
-    private JRadioButton vsComputerButton = new JRadioButton(vsComputerAction); // button for playing against the computer
+    private JRadioButton vsHumanButton;
+    private JRadioButton vsComputerButton;
 
     public void init() {
         var cp = getContentPane(); // get the content pane of the JFrame
@@ -49,6 +53,8 @@ public class AppWindow extends JFrame {
 
         JPanel radioPanel = new JPanel(); // create a new JPanel for the radio buttons
         radioPanel.setBorder(new TitledBorder("Play Strategy"));
+        vsHumanButton = new JRadioButton(vsHumanAction, App.game.getStrategy() == PlayStrategy.VsHuman); // create a new JRadioButton for the "vs. Human" strategy and set its initial state based on the current game strategy
+        vsComputerButton = new JRadioButton(vsComputerAction, App.game.getStrategy() == PlayStrategy.VsComputer); 
         radioPanel.add(vsHumanButton); // add the vsHumanButton to the radio panel
         radioPanel.add(vsComputerButton); // add the vsComputerButton to the radio panel
         StrategyButtonListener strategyListener = new StrategyButtonListener(); // create a new StrategyButtonListener for handling strategy selection
@@ -68,9 +74,38 @@ public class AppWindow extends JFrame {
         actionPanel.add(exitButton); // add the exit button to the action panel
         southPanel.add(actionPanel); // add the action panel to the south panel
 
+        updateWindow();
+        
     }
 
     public void updateWindow() {
+        TicTacToeGame game = App.game; // get the game instance from the App class
+        Marking[] board = game.getBoard(); // get the current state of the board from the game instance
+        for (int i = 0 ; i < board.length; i++) {
+            markingButtons[i].setMark(board[i]); 
+        }
+
+        switch(game.getState()) {
+            case INIT:
+            case OVER:
+                for (var b: markingButtons) {
+                    b.setEnabled(false); // disable all the marking buttons when the game is in the initial state
+                }
+                newGameButton.setEnabled(true); // enable the new game button when the game is in the initial state
+                vsHumanButton.setEnabled(true);
+                vsComputerButton.setEnabled(true);
+                break;
+            case PLAYING:
+                newGameButton.setEnabled(false); // disable the new game button while the game is in progress
+                vsHumanButton.setEnabled(false);
+                vsComputerButton.setEnabled(false);
+                for (int i = 0; i < board.length; i++) {
+                    markingButtons[i].setEnabled(board[i] == Marking.U); // enable the button if the cell is unmarked
+                }
+                break;
+                
+        }
+
         canvas.repaint(); // repaint the canvas to update the display
 
     }
