@@ -100,6 +100,26 @@ public class TicTacToeGame {
         }
     }
 
+    public GameState getState() {
+        return state;
+    }
+
+    public void setState(GameState state) {
+        this.state = state;
+    }
+
+    public PlayStrategy getStrategy() {
+        return strategy;
+    }
+
+    public void setStrategy(PlayStrategy strategy) {
+        this.strategy = strategy;
+    }
+
+    public Marking getWinner() {
+        return winner;
+    }
+
     @Override
     public String toString() { // string representation of the game board
         var r1 = String.format(" %s  %s  %s \n", board[0], board[1], board[2]);
