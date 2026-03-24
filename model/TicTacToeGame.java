@@ -59,7 +59,7 @@ public class TicTacToeGame {
     }
 
     public void computerPlayer() { // computer makes a move
-        int pos = computerPick();
+        int pos = computerPickAdvanced();
         board[pos] = turn; // mark the board
         ++moves; 
         
