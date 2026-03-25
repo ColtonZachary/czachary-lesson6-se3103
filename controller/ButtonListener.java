@@ -3,7 +3,6 @@ package controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import model.GameState;
 import model.TicTacToeGame;
 import view.BoardButton;
 
@@ -16,7 +15,7 @@ public class ButtonListener implements ActionListener {
 
         game.play(button.getPos()); // call the play method of the game with the position of the button that was clicked
         if (game.getWinner() != null) { // check if there is a winner after the move
-            game.setState(GameState.OVER); // set the game state to GAMEOVER
+            App.win.goNextState(); // transition to the next game state (e.g., from PLAYING to OVER)
             System.out.println("Game Over" + game.getWinner());
         }else {
             game.changeTurns();

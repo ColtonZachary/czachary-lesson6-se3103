@@ -1,15 +1,18 @@
 package model;
 
+import model.strategyPattern.PlayStrategy;
+import model.strategyPattern.VsHumanStrategy;
+
 public class TicTacToeGame {
     private Marking[] board = new Marking[9];
     private Marking turn = Marking.X; // X always starts first
     private int moves = 0;
     private Marking winner = null; // null means no winner yet // O, X, U (draw)
-    private GameState state = GameState.INIT; 
-    private PlayStrategy strategy = PlayStrategy.VsHuman; // default strategy
+    private PlayStrategy strategy;
 
     public TicTacToeGame() {
         reset(); // initialize the game board
+        setStrategy(new VsHumanStrategy(this)); // default strategy is human vs human
     }
 
     public void reset() { // reset the game to initial state
@@ -19,7 +22,6 @@ public class TicTacToeGame {
         turn = Marking.X; 
         moves = 0;
         winner = null;
-        state = GameState.INIT;
     }
 
     public void changeTurns() { // switch turns between X and O
@@ -30,44 +32,12 @@ public class TicTacToeGame {
         return turn;
     }
 
+    public void incMoves() {
+        moves++;
+    }
+
     public void play(int position) { // play a move at the given position
-        if (strategy == PlayStrategy.VsHuman) { // human vs human
-            humanPlayer(position);
-            setWinner();
-        }
-        else if (strategy == PlayStrategy.VsComputer) { // human vs computer
-            humanPlayer(position);
-            setWinner();
-            if (getWinner() != null) return;
-            changeTurns();
-            computerPlayer();
-            setWinner();
-        }
-    }
-
-    private int computerPick() { // pick a position for the computer player
-        int pos = -1;
-        for (int i = 0; i < board.length; i++) { // simple strategy: pick the first available cell
-            if (board[i] == Marking.U) {
-                pos = i;
-                break;
-            }
-        }
-        assert pos >= 0 : "Invalid position from computerPick()"; 
-        return pos;
-        
-    }
-
-    public void computerPlayer() { // computer makes a move
-        int pos = computerPickAdvanced();
-        board[pos] = turn; // mark the board
-        ++moves; 
-        
-    }
-
-    public void humanPlayer(int pos) {
-        board[pos] = turn; // mark the board
-        ++moves; 
+        strategy.play(position); // delegate the move to the current strategy
     }
 
     public Marking getWinner() {
@@ -130,14 +100,6 @@ public class TicTacToeGame {
         }else {
             return null; // no winner 
         }
-    }
-
-    public GameState getState() { // get the current game state
-        return state;
-    }
-
-    public void setState(GameState state) { // set the current game state
-        this.state = state;
     }
 
     public PlayStrategy getStrategy() { // get the current play strategy
